@@ -1,0 +1,4 @@
+find integral using Riemann sum
+
+find new approximation as long as the 
+difference between two last attempts is bigger than epsilon
