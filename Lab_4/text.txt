@@ -1,0 +1,2 @@
+Lisp was originally created as a practical mathematical notation for computer programs, influenced by the notation of Alonzo Church's lambda calculus. It quickly became the favored programming language for artificial intelligence (AI) research. As one of the earliest programming languages,
+tttt Lisp pioneered many ideas in computer science, including tree data structures, automatic storage 

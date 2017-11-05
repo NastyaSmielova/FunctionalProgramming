@@ -1,0 +1,124 @@
+(defclass word()
+  (
+    (word-content :accessor word-content)
+  )
+)
+
+(defclass sentence()
+	(
+         (words :accessor words
+                :initarg :words)
+         )
+)
+
+(defparameter vowels '(#\a #\o #\i #\u #\e #\y))
+(defparameter punctuation '(#\. #\, #\: #\( #\) #\!))
+
+; check if char is vowel
+(defun is-vowel(chr)
+  (cond
+    ((member chr vowels) 1)
+    (T 0)
+  )
+)
+;print word
+(defmethod print_word((w word) &key)
+  (print (word-content w))
+)
+;
+(defun words-equal(x y )
+  (string-equal (word-content x) (word-content y))
+)
+;find length
+(defmethod length-word ((w word))
+     (length (word-content w))
+)
+
+;calculate amount of vowels
+(defmethod vowels-count ((w word))
+  (calc (map 'list #'is-vowel (word-content w)))
+)
+
+; find sum of vowels
+(defun calc (lst)
+	(cond
+		((null lst) 0)
+		(T (+ (car lst) (sum (cdr lst))))
+	)
+)
+
+;print list of words
+(defun  print_words (sent)
+  (cond ((null sent) 0)
+    	(t (print_word (car sent)) (print_word_list (cdr sent)))
+    )
+)
+
+; replace punctuation by space
+(defun replacament(string)
+  (loop for i from 0 to (-( length string) 1 )
+        do (if (member(char string i) punctuation)
+             (replace string " " :start1 i :end1 (+  1 i))
+        )
+    )
+)
+
+; divide string into words by spaces
+(defun split-to-words (string)
+  (setf words '())
+  (loop for i = 0 then (1+ j)
+    as j = (position #\Space string :start i)
+    do
+      (setf wrd (make-instance 'word))
+      (setf _place (subseq string i j))
+      (if (not (equal _place ""))
+        (progn 
+          (setf (word-content wrd) _place)
+          (push wrd words)
+        )
+      )
+    while j)
+  words
+)
+
+
+
+; find frequency of vowels in the word
+(defmethod compare ((w word))
+  (/ (vowels-count w) (length-word w))
+) 
+
+
+; sorting words by frequency 
+(defmethod sort-words ((s sentence))
+    (sort (words s) #'> :key #'compare)
+)
+
+;read text, divide into words, create sentence and sort it
+(let ((in (open "C:/Users/pc/Documents/lisp/text.txt" )))
+   (setf allwords ())
+   (when in		
+      (loop for line = (read-line in nil)
+		while line do(
+			format t  line
+		;	(terpri)
+                        (replacament line)
+			(setf words (split-to-words line))
+	
+                      (loop for word in words do
+                         (setq have nil)
+                         (loop for word2 in allwords do
+                              ( if (string-equal(word-content word) (word-content word2) ) (setq have t)))
+                         (if (not have)  (push word allwords)))
+                         
+  
+                  )
+     )
+   (close in)
+   )
+   (setf  sentence  (make-instance 'sentence :words allwords))
+   (terpri)(print "all words : _______________________________________________________________")(terpri)
+   (print_words (words sentence))
+   (terpri)(print "sorted :__________________________________________________________________ ")(terpri)
+   (print_words (sort-words sentence ))
+)
